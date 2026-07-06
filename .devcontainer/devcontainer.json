@@ -1,0 +1,11 @@
+{
+  "name": "Quarkus Dev",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "quarkus",
+  "workspaceFolder": "/workspace",
+  "runServices": ["db", "quarkus"],
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [8080],
+  "postCreateCommand": "mvn -q -DskipTests clean install",
+  "remoteUser": "root"
+}
