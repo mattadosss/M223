@@ -1,0 +1,63 @@
+@startuml
+title Punchclock – Sequenzdiagramm: Zeiteintrag erfassen
+
+skinparam shadowing false
+autonumber
+
+actor Benutzer
+boundary Browser
+control EntryController
+control EntryService
+entity EmployeeRepository
+entity EntryRepository
+control "Hibernate ORM" as Hibernate
+database PostgreSQL
+
+Benutzer -> Browser: Zeiteintrag absenden
+Browser -> EntryController: POST /entries\nContent-Type: application/json\n{checkIn, checkOut?, employee: {id}}
+activate EntryController
+
+EntryController -> EntryService: createEntry(entry)
+activate EntryService
+
+EntryService -> EmployeeRepository: findById(employee.id)
+activate EmployeeRepository
+EmployeeRepository -> Hibernate: find(Employee, id)
+activate Hibernate
+Hibernate -> PostgreSQL: SELECT * FROM employee\nWHERE id = ?
+activate PostgreSQL
+PostgreSQL --> Hibernate: Datensatz oder kein Ergebnis
+deactivate PostgreSQL
+Hibernate --> EmployeeRepository: Employee oder null
+deactivate Hibernate
+EmployeeRepository --> EntryService: Employee oder null
+deactivate EmployeeRepository
+
+alt Mitarbeiter wurde gefunden
+  EntryService -> EntryService: entry.setEmployee(employee)
+  EntryService -> EntryRepository: persist(entry)
+  activate EntryRepository
+  EntryRepository -> Hibernate: persist(entry)
+  activate Hibernate
+  Hibernate -> PostgreSQL: INSERT INTO entry\n(check_in, check_out, employee_id)
+  activate PostgreSQL
+  PostgreSQL --> Hibernate: generierte ID
+  deactivate PostgreSQL
+  Hibernate --> EntryRepository: Eintrag gespeichert
+  deactivate Hibernate
+  EntryRepository --> EntryService: void
+  deactivate EntryRepository
+  EntryService --> EntryController: erstellter Entry
+  deactivate EntryService
+  EntryController --> Browser: HTTP 201 Created\nEntry als JSON
+  Browser --> Benutzer: Erfolg anzeigen
+else Mitarbeiter wurde nicht gefunden
+  EntryService --> EntryController: IllegalArgumentException\n"Employee not found"
+  deactivate EntryService
+  EntryController --> Browser: HTTP 400 Bad Request\n"Employee not found"
+  Browser --> Benutzer: Fehlermeldung anzeigen
+end
+
+deactivate EntryController
+
+@enduml
