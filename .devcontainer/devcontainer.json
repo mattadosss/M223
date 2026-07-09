@@ -7,5 +7,17 @@
   "shutdownAction": "stopCompose",
   "forwardPorts": [8080],
   "postCreateCommand": "mvn -q -DskipTests clean install",
-  "remoteUser": "root"
+  "remoteUser": "root",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "openai.chatgpt"
+      ]
+    }
+  },
+
+  "mounts": [
+    "source=${localEnv:HOME}/.codex,target=/root/.codex,type=bind,consistency=cached"
+  ]
 }
