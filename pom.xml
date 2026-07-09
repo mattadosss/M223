@@ -57,6 +57,18 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-flyway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit</artifactId>
             <scope>test</scope>
         </dependency>
@@ -90,6 +102,10 @@
                     <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <maven.home>${maven.home}</maven.home>
+                        <quarkus.datasource.db-kind>h2</quarkus.datasource.db-kind>
+                        <quarkus.datasource.jdbc.url>jdbc:h2:mem:projectarbeit-test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</quarkus.datasource.jdbc.url>
+                        <quarkus.datasource.username>sa</quarkus.datasource.username>
+                        <quarkus.datasource.password>sa</quarkus.datasource.password>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -110,6 +126,10 @@
                         <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <maven.home>${maven.home}</maven.home>
+                        <quarkus.datasource.db-kind>h2</quarkus.datasource.db-kind>
+                        <quarkus.datasource.jdbc.url>jdbc:h2:mem:projectarbeit-it;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</quarkus.datasource.jdbc.url>
+                        <quarkus.datasource.username>sa</quarkus.datasource.username>
+                        <quarkus.datasource.password>sa</quarkus.datasource.password>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

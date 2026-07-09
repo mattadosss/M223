@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Projektarbeit</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Projektarbeit</p>
+          <h1>Teamaufgaben</h1>
+        </div>
+        <div class="user-switcher" aria-label="Benutzerfilter">
+          <button class="segmented-button active" data-user-id="1" type="button">Maria</button>
+          <button class="segmented-button" data-user-id="2" type="button">Jonas</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="sidebar" aria-label="Projekte">
+          <div class="panel-header">
+            <h2>Projekte</h2>
+            <button class="icon-button" id="refreshButton" type="button" title="Aktualisieren" aria-label="Aktualisieren">↻</button>
+          </div>
+          <div id="projectList" class="project-list" aria-live="polite"></div>
+
+          <form id="projectForm" class="stacked-form">
+            <h3>Projekt anlegen</h3>
+            <label>
+              Name
+              <input name="name" required maxlength="80" autocomplete="off">
+            </label>
+            <label>
+              Beschreibung
+              <textarea name="description" rows="3" maxlength="220"></textarea>
+            </label>
+            <button class="primary-button" type="submit">+ Projekt</button>
+          </form>
+        </aside>
+
+        <section class="board-area" aria-label="Aufgabenboard">
+          <div class="section-header">
+            <div>
+              <p class="eyebrow" id="projectOwner">Owner</p>
+              <h2 id="projectTitle">Projekt auswählen</h2>
+              <p id="projectDescription" class="muted">Wählen Sie links ein Projekt aus.</p>
+            </div>
+            <form id="memberForm" class="inline-form">
+              <label>
+                Mitglied
+                <select name="userId">
+                  <option value="1">Maria</option>
+                  <option value="2">Jonas</option>
+                </select>
+              </label>
+              <button class="secondary-button" type="submit">+ Mitglied</button>
+            </form>
+          </div>
+
+          <form id="taskForm" class="task-composer">
+            <label>
+              Aufgabe
+              <input name="title" required maxlength="90" autocomplete="off">
+            </label>
+            <label>
+              Status
+              <select name="status">
+                <option value="OPEN">Offen</option>
+                <option value="IN_PROGRESS">In Arbeit</option>
+                <option value="DONE">Fertig</option>
+              </select>
+            </label>
+            <label>
+              Fällig
+              <input name="dueDate" type="date">
+            </label>
+            <label>
+              Person
+              <select name="assignedUserId">
+                <option value="">Keine</option>
+                <option value="1">Maria</option>
+                <option value="2">Jonas</option>
+              </select>
+            </label>
+            <label class="wide-field">
+              Beschreibung
+              <input name="description" maxlength="180" autocomplete="off">
+            </label>
+            <button class="primary-button" type="submit">+ Aufgabe</button>
+          </form>
+
+          <div class="board" id="taskBoard" aria-live="polite"></div>
+        </section>
+
+        <aside class="detail-panel" aria-label="Aufgabendetails">
+          <div class="panel-header">
+            <h2>Details</h2>
+            <button class="icon-button danger" id="deleteTaskButton" type="button" title="Aufgabe löschen" aria-label="Aufgabe löschen">×</button>
+          </div>
+          <div id="taskDetails" class="task-details empty-state">
+            Keine Aufgabe ausgewählt.
+          </div>
+          <div class="comments">
+            <h3>Kommentare</h3>
+            <div id="commentList" class="comment-list"></div>
+            <form id="commentForm" class="stacked-form compact">
+              <label>
+                Text
+                <textarea name="text" rows="3" maxlength="260" required></textarea>
+              </label>
+              <button class="secondary-button" type="submit">+ Kommentar</button>
+            </form>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

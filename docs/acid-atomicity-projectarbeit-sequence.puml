@@ -1,0 +1,49 @@
+@startuml
+title ACID Atomicity - Systemausfall beim Erstellen einer Aufgabe
+
+skinparam shadowing false
+autonumber
+
+actor Benutzer
+boundary "Frontend" as Frontend
+boundary "LearningPlatformResource" as Resource
+control "LearningPlatformService" as Service
+database "Datenbank" as DB
+
+note over Benutzer, DB
+  Gewaehlte ACID-Eigenschaft: Atomicity.
+  Beispiel ohne Geld: In der Projektarbeit wird eine Aufgabe erstellt
+  und direkt ein Start-Kommentar dazu gespeichert.
+end note
+
+Benutzer -> Frontend: Aufgabe mit Beschreibung erfassen
+Frontend -> Resource: POST /tasks\n{projectId, title, description, status}
+activate Resource
+Resource -> Service: createTask(request)
+activate Service
+Service -> DB: BEGIN TRANSACTION
+activate DB
+Service -> DB: INSERT INTO task\n(project_id, title, description, status)
+DB --> Service: task_id = 42
+
+... Systemausfall im unguenstigen Moment ...
+
+alt Keine Atomicity
+  DB --> DB: Aufgabe bleibt ohne Start-Kommentar gespeichert
+  note right of DB
+    Der Workflow ist nur halb abgeschlossen.
+    Die Aufgabe existiert, aber die erwartete
+    Begleitinformation fehlt.
+  end note
+else Mit Atomicity
+  DB -> DB: ROLLBACK der gesamten Transaktion
+  DB --> Service: Kein halber Zustand bleibt erhalten
+  Service --> Resource: Fehler nach Neustart erkennbar
+  Resource --> Frontend: Vorgang erneut senden
+end
+
+deactivate DB
+deactivate Service
+deactivate Resource
+
+@enduml
