@@ -9,6 +9,10 @@
     {
       "key": "baseUrl",
       "value": "http://localhost:8080"
+    },
+    {
+      "key": "jwtToken",
+      "value": ""
     }
   ],
   "item": [
@@ -61,6 +65,38 @@
               ],
               "path": [
                 "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get JWT Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"JWT token was returned\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.text()).to.not.be.empty;",
+                  "});",
+                  "",
+                  "pm.collectionVariables.set(\"jwtToken\", pm.response.text());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "token"
               ]
             }
           }
@@ -351,6 +387,37 @@
                 "tasks",
                 "1",
                 "comments"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Secure",
+      "item": [
+        {
+          "name": "Get Secure Data",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwtToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/secure/data",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "secure",
+                "data"
               ]
             }
           }
